@@ -131,10 +131,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+REDIS_HOST = 'redis'
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://redis:6379',
+        'LOCATION': f'redis://{REDIS_HOST}:6379',
     }
 }
 
