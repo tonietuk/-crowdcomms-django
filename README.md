@@ -8,6 +8,8 @@ Introduction
 
 Welcome to the __Bunnies API!__ Bunnies live in rabbit holes, and as a user you can manage rabbit holes and the bunnies that live in them. We also love to capture analytics about our users so we do some basic tracking too.
 
+We also deal with __Foxes__. Foxes are rather crafty.
+
 
 Instructions:
 ----
@@ -15,7 +17,9 @@ Instructions:
 This repository contains a simple Django Rest Framework API project with a couple of apps and models. We've added some
 basic views and tests. Essentially we'd like you to fix the project so that the whole test suite passes.
 
-We've setup the project in [poetry](https://python-poetry.org/), but there's also a basic [dockerfile](https://www.docker.com/) as well.
+We've setup the project in [poetry](https://python-poetry.org/), but there's also a basic [dockerfile](https://www.docker.com/) as well. Generally speaking, Docker should be the simplest setup.
+
+If you want to run the tests on your local machine you'll still need to run the redis container in docker, or somewhere else if you prefer. Also to run locally you'll need to user `--settings crowdcomms_code_test.settings_local` or set `DJANGO_SETTINGS_MODULE` appropriately.
 
 1. Import this repository into your personal github account using the github [import](https://github.com/new/import) page (Please **don't** create a fork). (https://github.com/new/import)
 2. Clone your imported repository to your local machine
