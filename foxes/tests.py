@@ -51,7 +51,6 @@ class FoxTests(TestCase):
 
         self.url = "/foxes/find-nearby-holes/"
 
-    
     def tearDown(self) -> None:
         cache.clear()
         return super().tearDown()
@@ -136,7 +135,7 @@ class FoxTests(TestCase):
         assert data["compass_direction"] == "S"
 
         # Mopsy moves into hole1
-        Bunny.objects.create(
+        mopsy = Bunny.objects.create(
             home=self.hole1,
             name="Mopsy"
         )
@@ -161,19 +160,21 @@ class FoxTests(TestCase):
     def test_speed(self):
         """
         As a highly-strung and hungry fox, I can't wait around for lengthy postgres
-        databsase queries to complete, I need to know the nearest rabbit hole instantly
+        database queries to complete, I need to know the nearest rabbit hole instantly
         so I can conserve my limited energy in the hunt.
         """
 
         self.client.login(username="reynard", password="foxy")
 
-        # Flopsy moves in to hole3
+        # CottonTail moves into hole3
         Bunny.objects.create(
             home=self.hole3,
             name="CottonTail"
         )
         
-        with self.assertNumQueries(3):
+        # NOTE: This is deliberate, 2 queries is all you're allowed! :)
+        # These foxes are demanding customers.
+        with self.assertNumQueries(2):
             resp = self.client.get(self.url)
         
         assert resp.status_code == 200
