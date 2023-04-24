@@ -11,4 +11,6 @@ services:
     build: .
     volumes:
       - .:/opt/app
+    depends_on:
+      - redis
       
