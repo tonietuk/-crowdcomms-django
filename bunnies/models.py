@@ -11,6 +11,11 @@ class RabbitHole(models.Model):
     location = models.CharField(max_length=64, unique=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bunnies_limit = models.PositiveIntegerField(default=5)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self) -> str:
+        return self.location
 
 
 class Bunny(models.Model):
@@ -19,3 +24,6 @@ class Bunny(models.Model):
     '''
     name = models.CharField(max_length=64)
     home = models.ForeignKey(RabbitHole, on_delete=models.CASCADE, related_name='bunnies')
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.id})"

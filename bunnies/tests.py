@@ -14,7 +14,7 @@ class RabbitHolesTests(APITestCase):
     def setUp(self):
         super().setUp()
         self.url = reverse(
-            'rabbithole-list'
+            'bunnies:rabbithole-list'
         )
 
     def test_authentication_required(self):
@@ -22,7 +22,7 @@ class RabbitHolesTests(APITestCase):
         I can only view the list of rabbitholes if I'm logged in
         '''
 
-        assert self.client.get(self.url).status_code == 403
+        assert self.client.get(self.url).status_code == 401
         User.objects.create_user(username='admin', email='rabbitoverlord@test.com', password='rabbits')
         self.client.login(username='admin', password='rabbits')
         assert self.client.get(self.url).status_code == 200
@@ -34,8 +34,8 @@ class RabbitHolesTests(APITestCase):
         user1 = User.objects.create_user(username='user1', email='user1@test.com', password='rabbits')
         user2 = User.objects.create_user(username='user2', email='user2@test.com', password='rabbits')
 
-        RabbitHole.objects.create(owner=user1, location='location1')
-        RabbitHole.objects.create(owner=user2, location='location2')
+        RabbitHole.objects.create(owner=user1, location='location1', latitude=1.0, longitude=1.0)
+        RabbitHole.objects.create(owner=user2, location='location2', latitude=1.0, longitude=1.0)
 
         self.client.login(username='user1', password='rabbits')
 
@@ -50,12 +50,12 @@ class RabbitHolesTests(APITestCase):
         The RabbitHole serializer automatically counts the number of bunnies living in the hole
         '''
         user1 = User.objects.create_user(username='user1', email='user1@test.com', password='rabbits')
-        hole = RabbitHole.objects.create(owner=user1, location='location1')
+        hole = RabbitHole.objects.create(owner=user1, location='location1', latitude=1.0, longitude=1.0)
 
         for name in ['Flopsy', 'Mopsy', 'CottonTail']:
             Bunny.objects.create(name=name, home=hole)
 
-        other_rabbit_hole = RabbitHole.objects.create(owner=user1, location='location2')
+        other_rabbit_hole = RabbitHole.objects.create(owner=user1, location='location2', latitude=1.0, longitude=1.0)
         other_bunny = Bunny.objects.create(name='Snowball', home=other_rabbit_hole)
 
         self.client.login(username=user1.username, password='rabbits')
@@ -98,7 +98,7 @@ class RabbitHolesTests(APITestCase):
         superuser = User.objects.create_user(username='superuser', email='superuser@test.com', password='rabbits',
                                              is_superuser=True)
 
-        rabbit_hole = RabbitHole.objects.create(owner=user, location='location')
+        rabbit_hole = RabbitHole.objects.create(owner=user, location='location', latitude=1.0, longitude=1.0)
         self.client.login(username='superuser', password='rabbits')
         response = self.client.delete(f'/rabbitholes/{rabbit_hole.id}/')
         self.assertEqual(response.status_code, 204)
@@ -108,11 +108,11 @@ class RabbitHolesTests(APITestCase):
         Cannot exceed the limit of bunnies in a rabbithole
         '''
         user = User.objects.create_user(username='user', email='user@test.com', password='rabbits')
-        rabbit_hole = RabbitHole.objects.create(owner=user, location='location', bunnies_limit=3)
+        rabbit_hole = RabbitHole.objects.create(owner=user, location='location', bunnies_limit=3, latitude=1.0, longitude=1.0)
         for name in ['Flopsy', 'Mopsy', 'CottonTail']:
             Bunny.objects.create(name=name, home=rabbit_hole)
         url = reverse(
-            'bunny-list'
+            'bunnies:bunny-list'
         )
         self.client.login(username='user', password='rabbits')
         data = {
@@ -128,8 +128,8 @@ class RabbitHolesTests(APITestCase):
         one we are looking at
         '''
         user = User.objects.create_user(username='user', email='user@test.com', password='rabbits')
-        rabbit_hole = RabbitHole.objects.create(owner=user, location='location')
-        other_rabbit_hole = RabbitHole.objects.create(owner=user, location='location2')
+        rabbit_hole = RabbitHole.objects.create(owner=user, location='location', latitude=1.0, longitude=1.0)
+        other_rabbit_hole = RabbitHole.objects.create(owner=user, location='location2', latitude=1.0, longitude=1.0)
         names = ['Flopsy', 'Mopsy', 'CottonTail']
         for name in names:
             Bunny.objects.create(name=name, home=rabbit_hole)

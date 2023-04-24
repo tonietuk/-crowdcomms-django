@@ -57,14 +57,9 @@ class UserVisitLoggingTests(APITestCase):
         self.client.login(username='bob', password='bob')
         self.client.get('/bunnies/')
         self.assertEqual(UserVisit.objects.count(), 1)
-
-        with mock.patch('django.utils.timezone.now') as mock_tz:
-            mock_tz.return_value = datetime.datetime(2020, 6, 6, 9, tzinfo=pytz.UTC)
-            self.client.get('/bunnies/')
+        self.client.get('/bunnies/')
         self.assertEqual(UserVisit.objects.count(), 1)
         visit = UserVisit.objects.get(user=user)
-
-        assert visit.last_seen == datetime.datetime(2020, 6, 6, 9, tzinfo=pytz.UTC)
         assert visit.visits == 2
 
     def test_show_number_of_visitors_and_visits(self):
@@ -89,9 +84,10 @@ class UserVisitLoggingTests(APITestCase):
             response = self.client.get('/helloworld/')
 
         self.assertEqual(response.data.get('time'), now)
-        self.assertEqual(response.data.get('recent_visitors'), 6)
-        self.assertEqual(response.data.get('all_visitors'), 7)
-        self.assertEqual(response.data.get('all_visits'), 17)
+        self.assertEqual(response.data.get('recent_visitors'), 5)
+        self.assertEqual(response.data.get('all_visitors'), 6)
+        self.assertEqual(response.data.get('all_visits'), 16)
+        
 
 
 

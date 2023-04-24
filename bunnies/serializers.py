@@ -13,7 +13,7 @@ class RabbitHoleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RabbitHole
-        fields = ('location', 'bunnies', 'bunny_count', 'owner')
+        fields = ('location', 'bunnies', 'bunny_count', 'owner', 'latitude', 'longitude')
 
 
 class BunnySerializer(serializers.ModelSerializer):

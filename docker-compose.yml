@@ -1,9 +1,14 @@
 version: '2'
 
 services: 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+
   project:
-    image: crowdcomms/django-test:latest
+    image: bunnies:stable
     build: .
-    volumes: 
-      - .:/tmp/myapp
+    volumes:
+      - .:/opt/app
       

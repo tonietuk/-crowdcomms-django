@@ -14,20 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # from django.contrib import admin
-from django.conf.urls import url
 from django.urls import path, include
 from rest_framework import routers
+import pprint
 
 from analytics.views import HelloWorld
 from bunnies.views import RabbitHoleViewSet, BunnyViewSet
+from foxes.views import get_nearby_active_rabbit_holes
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 
 router.register('rabbitholes', RabbitHoleViewSet)
 router.register('bunnies', BunnyViewSet)
 
 urlpatterns = [
-    url(r'^helloworld/$', HelloWorld.as_view()),
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('helloworld/', HelloWorld.as_view()),
+    path('foxes/find-nearby-holes/', get_nearby_active_rabbit_holes),
+    path('api-auth/', include('rest_framework.urls')),
+    path('', include((router.urls, 'bunnies')))
 ]
