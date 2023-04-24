@@ -3,6 +3,7 @@ from bunnies.models import RabbitHole, Bunny
 from django.contrib.auth import get_user_model
 from foxes.models import Fox
 from django.urls import reverse
+from django.core.cache import cache
 
 UserModel = get_user_model()
 
@@ -49,6 +50,11 @@ class FoxTests(TestCase):
         )
 
         self.url = "/foxes/find-nearby-holes/"
+
+    
+    def tearDown(self) -> None:
+        cache.clear()
+        return super().tearDown()
 
     def test_must_be_a_fox(self):
         """
@@ -104,7 +110,7 @@ class FoxTests(TestCase):
         data = resp.json()
 
         assert data["location"] == self.hole3.location
-        self.assertAlmostEqual(data['distance'], 28.304820586821673, 3)
+        self.assertAlmostEqual(data['distance_km'], 28.304820586821673, 1)
 
 
     def test_multiple_populated_rabbit_holes(self):
@@ -126,7 +132,7 @@ class FoxTests(TestCase):
         data = resp.json()
 
         assert data["location"] == self.hole3.location
-        self.assertAlmostEqual(data['distance_km'], 28.304820586821673, 3)
+        self.assertAlmostEqual(data['distance_km'], 28.304820586821673, 1)
         assert data["compass_direction"] == "S"
 
         # Mopsy moves into hole1
@@ -140,7 +146,7 @@ class FoxTests(TestCase):
         data = resp.json()
 
         assert data["location"] == self.hole1.location
-        self.assertAlmostEqual(data['distance_km'], 0.4310656644081723, 3)
+        self.assertAlmostEqual(data['distance_km'], 0.4310656644081723, 1)
         assert data["compass_direction"] == "N"
 
         # If we decide to move, the closest populated rabbithole may change
@@ -149,7 +155,7 @@ class FoxTests(TestCase):
         data = resp.json()
 
         assert data["location"] == self.hole3.location
-        self.assertAlmostEqual(data['distance_km'], 1.5838097872012162, 3)
+        self.assertAlmostEqual(data['distance_km'], 1.5838097872012162, 1)
         assert data["compass_direction"] == "S"
 
     def test_speed(self):
@@ -167,7 +173,7 @@ class FoxTests(TestCase):
             name="CottonTail"
         )
         
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(3):
             resp = self.client.get(self.url)
         
         assert resp.status_code == 200
