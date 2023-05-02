@@ -9,6 +9,7 @@ services:
   project:
     image: bunnies:stable
     build: .
+    tty: true
     volumes:
       - .:/opt/app
     depends_on:
